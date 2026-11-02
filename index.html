@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Démonstration du tirage au sort, Convention du Pacte pour la jeunesse</title>
+<style>
+@font-face{font-family:Archivo;font-weight:400;src:url(archivo-latin-400-normal.woff2)}
+@font-face{font-family:Archivo;font-weight:700;src:url(archivo-latin-700-normal.woff2)}
+@font-face{font-family:Archivo;font-weight:900;src:url(archivo-latin-900-normal.woff2)}
+:root{--papier:#fafafa;--carte:#f0f0f0;--noir:#231f20;--gris:#5f5a59;--filet:#d6d2cf;--rouge:#e1000f;--jaune:#fef7c0;--vert:#d6f7dc;--cobalt:#d9edfe}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papier);color:var(--noir);font:400 16px/1.5 Archivo,system-ui,sans-serif}
+.bandeau{background:var(--jaune);padding:10px 20px;font-weight:700;font-size:14px;text-align:center}
+main{max-width:980px;margin:0 auto;padding:32px 20px 80px}
+h1{font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.05;margin:0 0 10px;letter-spacing:-.01em}
+.chapo{color:var(--gris);margin:0 0 28px;max-width:60ch}
+.etape{background:#fff;border:1px solid var(--filet);border-left:6px solid var(--rouge);padding:22px 24px;margin:0 0 20px}
+.etape.inactive{opacity:.45;pointer-events:none}
+.etape h2{font-weight:900;font-size:21px;margin:0 0 6px;display:flex;gap:10px;align-items:baseline}
+.etape h2 span{color:var(--rouge)}
+.etape p{margin:6px 0;max-width:70ch}
+.chiffres{display:flex;gap:28px;flex-wrap:wrap;margin:14px 0}
+.chiffres b{display:block;font-size:30px;font-weight:900;line-height:1}
+.chiffres small{color:var(--gris)}
+.empreinte{font:13px/1.4 ui-monospace,Menlo,monospace;background:var(--carte);padding:8px 10px;word-break:break-all;margin:4px 0 10px}
+.libelle{font-size:13px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-top:12px}
+button,.bouton{font:700 15px Archivo,sans-serif;border:2px solid var(--noir);background:#fff;color:var(--noir);padding:10px 16px;cursor:pointer;text-decoration:none;display:inline-block;margin:6px 8px 6px 0}
+button.principal{background:var(--rouge);border-color:var(--rouge);color:#fff;font-size:17px;padding:13px 22px}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,.bouton:focus-visible,input:focus-visible{outline:3px solid #1f6feb;outline-offset:2px}
+input[type=text],input[type=search]{font:16px ui-monospace,Menlo,monospace;padding:10px 12px;border:2px solid var(--noir);width:100%;max-width:520px;background:#fff}
+.des{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.de{width:46px;height:46px;border:2px solid var(--noir);border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:22px;background:#fff}
+.de.roule{animation:roule .5s ease-out}
+@keyframes roule{0%{transform:rotate(-200deg) scale(.6)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.de.roule{animation:none}}
+.pv{background:var(--vert);padding:14px 16px;margin:12px 0}
+.pv dt{font-weight:700;font-size:14px}
+.pv dd{margin:0 0 8px;font:13px/1.4 ui-monospace,Menlo,monospace;word-break:break-all}
+table{border-collapse:collapse;width:100%;font-size:14px;margin-top:10px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--filet)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--gris)}
+tr.attente td{color:var(--gris)}
+.statut{font-weight:700}
+tr.tire .statut{color:#0b7a2a}
+.defile{max-height:420px;overflow:auto;border:1px solid var(--filet);margin-top:8px}
+.filtres{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.verdict{font-weight:900;padding:10px 14px;margin-top:10px}
+.verdict.ok{background:var(--vert)}.verdict.ko{background:#ffdfe2}
+code{font:14px ui-monospace,Menlo,monospace;background:var(--carte);padding:1px 5px}
+@media (max-width:600px){main{padding:20px 14px 60px}.etape{padding:16px 14px}}
+footer{color:var(--gris);font-size:13px;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="bandeau">Démonstration. Les 600 inscrits sont entièrement fictifs. Aucune donnée réelle n'est utilisée.</div>
+<main>
+<h1>Le tirage au sort de la Convention du Pacte pour la jeunesse</h1>
+<p class="chapo">Cette page reproduit le déroulé prévu le lundi 9 novembre devant le commissaire de justice. Le calcul se fait entièrement dans votre navigateur, avec le même programme que celui qui sera utilisé le jour du tirage.</p>
+
+<section class="etape" id="e1">
+  <h2><span>1</span> La liste figée</h2>
+  <p>Après le dernier contrôle, la liste des éligibles est figée dans un fichier qui ne contient qu'un numéro de participant par ligne. La correspondance avec les prénoms et les noms est tenue à part.</p>
+  <div class="chiffres"><div><b id="nb">…</b><small>inscrits éligibles</small></div><div><b>150</b><small>places</small></div></div>
+  <div class="libelle">Empreinte de la liste (SHA-256)</div>
+  <div class="empreinte" id="empListe">…</div>
+  <p>Le commissaire peut recalculer cette empreinte lui-même, sans notre programme : <code>shasum -a 256 liste.txt</code> sur Mac, <code>certutil -hashfile liste.txt SHA256</code> sur Windows.</p>
+  <a class="bouton" id="dlListe" download="liste.txt">Télécharger liste.txt</a>
+  <a class="bouton" id="dlCorr" download="correspondance.csv">Télécharger la correspondance</a>
+</section>
+
+<section class="etape" id="e2">
+  <h2><span>2</span> Le hasard du commissaire</h2>
+  <p>Le commissaire lance des dés devant témoins et saisit lui-même la suite des faces obtenues. Ici, les dés sont simulés. La valeur peut aussi être tapée à la main.</p>
+  <div class="des" id="des" aria-live="polite"></div>
+  <button id="lancer">Lancer dix dés</button>
+  <div class="libelle"><label for="valeur">Valeur saisie</label></div>
+  <input type="text" id="valeur" autocomplete="off" spellcheck="false" placeholder="par exemple 4 2 6 1 3 5 5 2 1 6">
+  <p><small>La valeur est utilisée exactement comme elle est tapée, espaces compris. Le procès-verbal la reproduit caractère pour caractère.</small></p>
+</section>
+
+<section class="etape" id="e3">
+  <h2><span>3</span> Le tirage</h2>
+  <p>Le programme mélange la liste à partir de la valeur. Les 150 premiers sont tirés au sort, les suivants forment la liste d'attente dans l'ordre. Le tirage n'a lieu qu'une fois.</p>
+  <button class="principal" id="tirer" disabled>Lancer le tirage</button>
+  <span id="enCours" hidden>Calcul en cours…</span>
+</section>
+
+<section class="etape inactive" id="e4">
+  <h2><span>4</span> Le résultat et le procès-verbal</h2>
+  <p>Mentions à reporter au procès-verbal :</p>
+  <dl class="pv" id="pv"></dl>
+  <a class="bouton" id="dlRes" download="resultat.csv">Télécharger resultat.csv</a>
+  <a class="bouton" id="dlPv" download="proces-verbal-mentions.txt">Télécharger les mentions</a>
+  <div class="filtres">
+    <input type="search" id="cherche" placeholder="Chercher un nom ou un numéro" aria-label="Chercher un nom ou un numéro">
+    <label><input type="radio" name="f" value="tous" checked> Tous</label>
+    <label><input type="radio" name="f" value="tire"> Tirés au sort</label>
+    <label><input type="radio" name="f" value="attente"> Liste d'attente</label>
+  </div>
+  <div class="defile"><table><thead><tr><th>Rang</th><th>Numéro</th><th>Prénom</th><th>Nom</th><th>Statut</th></tr></thead><tbody id="tab"></tbody></table></div>
+</section>
+
+<section class="etape inactive" id="e5">
+  <h2><span>5</span> Vérifier le tirage</h2>
+  <p>Toute personne qui dispose de la liste et de la valeur peut rejouer le calcul. Si l'empreinte du résultat est la même que celle du procès-verbal, le tirage n'a pas été modifié. Rejouer vérifie le tirage sans en produire un nouveau.</p>
+  <div class="libelle"><label for="valeurVerif">Valeur du procès-verbal</label></div>
+  <input type="text" id="valeurVerif" autocomplete="off" spellcheck="false">
+  <div class="libelle"><label for="empVerif">Empreinte du résultat au procès-verbal</label></div>
+  <input type="text" id="empVerif" autocomplete="off" spellcheck="false">
+  <div><button id="verifier">Rejouer le calcul</button></div>
+  <div id="verdict" aria-live="polite"></div>
+  <p>Hors de cette page, avec Node.js : <code>node tirage.mjs liste.txt "valeur"</code>.</p>
+  <a class="bouton" href="tirage.mjs" download>Télécharger le programme tirage.mjs</a>
+</section>
+
+<button id="raz">Recommencer la démonstration</button>
+<footer>Programme : HMAC-SHA256 et mélange de Fisher et Yates. Le code de cette page et celui de tirage.mjs produisent le même résultat pour la même liste et la même valeur.</footer>
+</main>
+
+<script src="inscrits.js"></script>
+<script src="tirage.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const CLE = "demo-tirage-pacte";
+const NOMS = new Map(INSCRITS.map(([n, p, nom]) => [n, [p, nom]]));
+const LISTE = INSCRITS.map((i) => i[0]).join("\n") + "\n";
+const BRUT = new TextEncoder().encode(LISTE);
+const blobUrl = (txt, type) => URL.createObjectURL(new Blob([txt], { type }));
+let tirage = null;
+
+async function init() {
+  $("nb").textContent = INSCRITS.length;
+  $("empListe").textContent = await sha256Hex(BRUT);
+  $("dlListe").href = blobUrl(LISTE, "text/plain");
+  $("dlCorr").href = blobUrl("numero;prenom;nom;age\n" + INSCRITS.map((i) => i.join(";")).join("\n") + "\n", "text/csv");
+  const garde = localStorage.getItem(CLE);
+  if (garde) afficher(JSON.parse(garde).valeur, false);
+}
+
+$("lancer").onclick = () => {
+  const faces = [...crypto.getRandomValues(new Uint32Array(10))].map((x) => (x % 6) + 1);
+  $("des").innerHTML = faces.map((f) => `<div class="de roule">${f}</div>`).join("");
+  $("valeur").value = faces.join(" ");
+  majBouton();
+};
+$("valeur").oninput = majBouton;
+function majBouton() { $("tirer").disabled = !$("valeur").value || !!tirage; }
+
+$("tirer").onclick = async () => {
+  const v = $("valeur").value;
+  if (!v || tirage) return;
+  if (!confirm(`Lancer le tirage avec la valeur « ${v} » ? Il n'aura lieu qu'une fois.`)) return;
+  await afficher(v, true);
+};
+
+async function afficher(valeur, nouveau) {
+  $("enCours").hidden = false;
+  tirage = await tirer(BRUT, valeur);
+  tirage.valeur = valeur;
+  $("enCours").hidden = true;
+  if (nouveau) localStorage.setItem(CLE, JSON.stringify({ valeur }));
+  $("valeur").value = valeur; $("valeur").readOnly = true;
+  $("lancer").disabled = true; $("tirer").disabled = true;
+  $("tirer").textContent = "Tirage effectué";
+  ["e4", "e5"].forEach((id) => $(id).classList.remove("inactive"));
+  const pv = [
+    ["Nombre de numéros dans la liste", tirage.nombre],
+    ["Empreinte de la liste", tirage.empreinteListe],
+    ["Valeur saisie par le commissaire", JSON.stringify(valeur)],
+    ["Empreinte du résultat", tirage.empreinteResultat],
+  ];
+  $("pv").innerHTML = pv.map(([a, b]) => `<dt>${a}</dt><dd>${String(b).replace(/</g, "&lt;")}</dd>`).join("");
+  $("dlRes").href = blobUrl(tirage.resultat, "text/csv");
+  $("dlPv").href = blobUrl(pv.map(([a, b]) => `${a} : ${b}`).join("\n") + "\n", "text/plain");
+  $("valeurVerif").value = valeur;
+  $("empVerif").value = tirage.empreinteResultat;
+  rendreTable();
+  if (nouveau) $("e4").scrollIntoView({ behavior: "smooth" });
+}
+
+function rendreTable() {
+  const q = $("cherche").value.trim().toLowerCase();
+  const f = document.querySelector("input[name=f]:checked").value;
+  $("tab").innerHTML = tirage.ordre.map((n, k) => {
+    const [p, nom] = NOMS.get(n); const tire = k < PLACES;
+    if (f === "tire" && !tire) return ""; if (f === "attente" && tire) return "";
+    if (q && !`${n} ${p} ${nom}`.toLowerCase().includes(q)) return "";
+    return `<tr class="${tire ? "tire" : "attente"}"><td>${k + 1}</td><td>${n}</td><td>${p}</td><td>${nom}</td><td class="statut">${tire ? "tiré au sort" : "liste d'attente"}</td></tr>`;
+  }).join("");
+}
+$("cherche").oninput = rendreTable;
+document.querySelectorAll("input[name=f]").forEach((r) => (r.onchange = rendreTable));
+
+$("verifier").onclick = async () => {
+  const r = await tirer(BRUT, $("valeurVerif").value);
+  const ok = r.empreinteResultat === $("empVerif").value.trim();
+  $("verdict").className = "verdict " + (ok ? "ok" : "ko");
+  $("verdict").textContent = ok
+    ? "Même empreinte : le résultat correspond au procès-verbal."
+    : `Empreinte différente (${r.empreinteResultat}) : la valeur ou le résultat ne correspondent pas au procès-verbal.`;
+};
+
+$("raz").onclick = () => {
+  if (!confirm("Effacer ce tirage de démonstration et recommencer ?")) return;
+  localStorage.removeItem(CLE); location.reload();
+};
+init();
+</script>
+</body>
+</html>
