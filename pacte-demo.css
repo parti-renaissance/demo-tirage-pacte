@@ -1,0 +1,215 @@
+/* Jetons et composants repris de la maquette du tirage (Telegram Android 2026, Liquid Glass). */
+/* Généré depuis DESIGN.md par « maquettes jetons ». Ne pas modifier : modifier DESIGN.md. */
+:root {
+  --color-primary: #0a5cff;
+  --color-primary-sombre: #5c95ff;
+  --color-accent: #0a5cff;
+  --color-sur-accent: #ffffff;
+  --color-titre-barre: #0a5cff;
+  --color-titre-barre-sombre: #ffffff;
+  --color-alerte: #c42e23;
+  --color-alerte-sombre: #ff6b5e;
+  --color-fond: #efeff4;
+  --color-fond-sombre: #151e27;
+  --color-surface: #ffffff;
+  --color-surface-sombre: #1d2733;
+  --color-texte: #000000;
+  --color-texte-sombre: #f5f7fa;
+  --color-texte-2: #6c6c70;
+  --color-texte-2-sombre: #8fa0b2;
+  --color-bord: #d7d7d9;
+  --color-bord-sombre: #2f3d4d;
+  --color-bulle: #e8efff;
+  --color-bulle-sombre: #2b5278;
+  --color-bulle-texte: #000000;
+  --color-bulle-texte-sombre: #ffffff;
+  --color-verre-android: #ffffffd1;
+  --color-verre-android-sombre: #202f3dde;
+  --color-verre-plein-android: #f8f8fa;
+  --color-verre-plein-android-sombre: #202f3d;
+  --color-lentille: #0a5cff1f;
+  --color-lentille-sombre: #5c95ff38;
+  --color-champ-android: #f1f1f3eb;
+  --color-champ-android-sombre: #2c3541eb;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --rounded-petit: 12px;
+  --rounded-carte: 16px;
+  --rounded-feuille: 26px;
+  --rounded-capsule: 999px;
+  --font-titre: system-ui, Roboto, 'Segoe UI', -apple-system, sans-serif;
+  --text-titre: 20px;
+  --weight-titre: 700;
+  --leading-titre: 1.25;
+  --tracking-titre: 0px;
+  --font-corps: system-ui, Roboto, 'Segoe UI', -apple-system, sans-serif;
+  --text-corps: 16px;
+  --weight-corps: 400;
+  --leading-corps: 1.45;
+  --font-brouillon: system-ui, Roboto, 'Segoe UI', -apple-system, sans-serif;
+  --text-brouillon: 16px;
+  --weight-brouillon: 400;
+  --leading-brouillon: 1.4;
+  --font-note: system-ui, Roboto, 'Segoe UI', -apple-system, sans-serif;
+  --text-note: 13px;
+  --weight-note: 400;
+  --leading-note: 1.4;
+}
+html[data-theme="sombre"] {
+  --color-primary: var(--color-primary-sombre);
+  --color-titre-barre: var(--color-titre-barre-sombre);
+  --color-alerte: var(--color-alerte-sombre);
+  --color-fond: var(--color-fond-sombre);
+  --color-surface: var(--color-surface-sombre);
+  --color-texte: var(--color-texte-sombre);
+  --color-texte-2: var(--color-texte-2-sombre);
+  --color-bord: var(--color-bord-sombre);
+  --color-bulle: var(--color-bulle-sombre);
+  --color-bulle-texte: var(--color-bulle-texte-sombre);
+  --color-verre-android: var(--color-verre-android-sombre);
+  --color-verre-plein-android: var(--color-verre-plein-android-sombre);
+  --color-lentille: var(--color-lentille-sombre);
+  --color-champ-android: var(--color-champ-android-sombre);
+}
+
+/* Base commune des écrans du tirage du Pacte : Telegram Android 2026 (Liquid Glass).
+   Écrans de liste : page à plat sur la surface, cartes sur le fond secondaire.
+   Aucune couleur en dur : tout passe par les jetons de jetons.css (seules les ombres utilisent rgb() ou #hex à alpha). */
+:root {
+  --ease-sortie: cubic-bezier(0.22, 1, 0.36, 1);
+  --primaire-fort: color-mix(in srgb, var(--color-primary) 85%, var(--color-texte));
+  --ombre-verre: 0 0 0 .5px #00000014, 0 2px 10px #00000017;
+  --ombre-bouton: 0 2px 10px #0000003d;
+  --ombre-haute: 0 8px 28px rgb(0 0 0 / 20%);
+  --marge: 12px;
+  color-scheme: light;
+}
+html[data-theme="sombre"] { color-scheme: dark; --ombre-verre: 0 0 0 .5px #ffffff14, 0 2px 10px #00000052; }
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { font-family: var(--font-corps); font-size: var(--text-corps); line-height: var(--leading-corps); background: var(--color-surface); color: var(--color-texte); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+a { color: var(--color-primary); }
+h1, h2, h3 { font-family: var(--font-titre); line-height: var(--leading-titre); margin: 0; }
+h1 { font-size: var(--text-titre); font-weight: var(--weight-titre); }
+h2 { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+p { margin: 0 0 var(--spacing-sm); }
+:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; border-radius: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+svg.ic { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Page et en-tête nu : titre à gauche, ⋮ nu à droite, ni bande ni ombre */
+.page { max-width: 560px; margin: 0 auto; padding: 0 var(--marge) 56px; animation: pc-entree 360ms var(--ease-sortie) both; }
+.page.large { max-width: 1120px; }
+.tete { display: flex; align-items: center; gap: var(--spacing-sm); min-height: 56px; padding: 6px 0; }
+.tete h1 { flex: 1; min-width: 0; color: var(--color-titre-barre); }
+.tete .sceau { display: inline-flex; align-items: center; gap: 6px; color: var(--color-texte-2); }
+.plus, .retour-fl { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 50%; background: none; color: var(--color-texte); cursor: pointer; margin-right: -8px; }
+.plus:hover { background: var(--color-lentille); }
+.plus svg { width: 22px; height: 22px; fill: currentColor; }
+.note { color: var(--color-texte-2); font-size: var(--text-note); line-height: var(--leading-note); }
+p.note { text-align: center; margin-top: var(--spacing-lg); }
+@keyframes pc-entree { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pc-pop { 0% { transform: scale(.94); opacity: 0; } 60% { transform: scale(1.02); opacity: 1; } 100% { transform: none; } }
+.entree { animation: pc-entree 320ms var(--ease-sortie) both; }
+.pop { animation: pc-pop 320ms var(--ease-sortie) both; }
+
+/* Recherche : capsule permanente sous le titre */
+.recherche { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; margin: 4px 0 8px; border-radius: 999px; background: var(--color-champ-android); color: var(--color-texte-2); }
+.recherche:focus-within { outline: 2px solid var(--color-primary); }
+.recherche input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; outline: none; color: var(--color-texte); }
+.recherche input::placeholder { color: var(--color-texte-2); }
+.recherche input::-webkit-search-cancel-button { display: none; }
+
+/* Filtres : pastilles sans conteneur, l'active teintée de bleu */
+.filtres { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin: 0 calc(var(--marge) * -1) var(--spacing-sm); padding: 0 var(--marge); }
+.filtres::-webkit-scrollbar { display: none; }
+.puce { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: none; color: var(--color-texte); font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 160ms, transform 160ms var(--ease-sortie); }
+.puce:active { transform: scale(.95); }
+.puce[aria-pressed="true"] { background: color-mix(in srgb, var(--color-accent) 12%, transparent); color: var(--primaire-fort); }
+.puce .n { font-variant-numeric: tabular-nums; font-weight: 400; }
+
+/* Cartes détachées à 12 px des bords, titre de section dans la carte, en couleur de lien */
+.carte, .bloc { background: var(--color-fond); border-radius: var(--rounded-carte); padding: var(--spacing-md); }
+.bloc { border-radius: var(--rounded-petit); }
+.carte > h2:first-child { margin-bottom: 6px; }
+.retenu { background: var(--color-fond); border-radius: var(--rounded-carte); padding: 14px var(--spacing-md); margin-bottom: var(--spacing-md); }
+.retenu h2 { margin-bottom: 2px; }
+.retenu p { margin: 0; }
+.retenu.alerte { background: color-mix(in srgb, var(--color-alerte) 10%, var(--color-surface)); }
+.retenu.alerte h2 { color: var(--color-alerte); }
+.mono { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 13px; word-break: break-all; }
+.empreinte { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.empreinte .mono { background: var(--color-surface); border-radius: 8px; padding: 4px 8px; color: var(--color-texte); }
+
+/* Boutons : capsules entières */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--color-accent) 12%, transparent); color: var(--primaire-fort); font-weight: 600; text-decoration: none; cursor: pointer; transition: transform 160ms var(--ease-sortie), background 200ms; }
+.btn:hover { background: color-mix(in srgb, var(--color-accent) 20%, transparent); }
+.btn:active { transform: scale(.96); }
+.btn.primaire { background: var(--color-accent); color: var(--color-sur-accent); }
+.btn.primaire:hover { background: color-mix(in srgb, var(--color-accent) 88%, var(--color-texte)); }
+.btn.grand { min-height: 52px; padding: 0 28px; font-size: 17px; width: 100%; }
+.btn.petit { min-height: 36px; padding: 0 14px; font-size: 14px; }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: default; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); }
+
+/* Champs */
+.champ { display: block; }
+.champ label { display: block; font-weight: 500; margin-bottom: 6px; }
+.champ input, .champ select { width: 100%; min-height: 48px; padding: 0 16px; border: 1.5px solid transparent; border-radius: var(--rounded-petit); background: var(--color-surface); transition: border-color 160ms, box-shadow 160ms; }
+.champ input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-lentille); }
+.champ input:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 1px; }
+.champ .aide { color: var(--color-texte-2); font-size: var(--text-note); margin-top: 6px; }
+.champ.erreur input { border-color: var(--color-alerte); }
+.erreur-msg { color: var(--color-alerte); font-size: 14px; margin-top: 6px; font-weight: 500; }
+
+/* Pastilles de statut : la forme et le libellé portent le sens, pas la couleur seule */
+.pastille { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; font-size: 13px; font-weight: 500; line-height: 1.4; white-space: nowrap; border: 1.5px solid transparent; transition: background 300ms, color 300ms, border-color 300ms; }
+.pastille::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.p-prevenue { color: var(--primaire-fort); border-color: var(--color-primary); background: transparent; }
+.p-prevenue::before { background: transparent; border: 2px solid currentColor; }
+.p-confirmee { color: var(--color-sur-accent); background: var(--color-accent); }
+.p-attente-accord { color: var(--color-texte); background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface)); border: 1.5px dashed var(--color-texte-2); }
+.p-attente-accord::before { border-radius: 2px; background: var(--color-texte-2); }
+.p-desistee { color: var(--color-texte-2); background: transparent; border-color: var(--color-bord); text-decoration: line-through; }
+.p-desistee::before { background: var(--color-texte-2); }
+.p-expiree { color: var(--color-alerte); background: color-mix(in srgb, var(--color-alerte) 12%, var(--color-surface)); }
+.p-expiree::before { border-radius: 1px; transform: rotate(45deg); }
+.p-ecartee { color: var(--color-surface); background: var(--color-alerte); }
+.p-ecartee::before { border-radius: 0; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.p-non-prevenue { color: var(--color-texte-2); background: var(--color-fond); border-color: var(--color-bord); }
+.p-non-prevenue::before { background: transparent; border: 2px dotted currentColor; }
+/* Liste complémentaire et place proposée (messagerie) : gris plein à tiret, bleu teinté à flèche */
+.p-complementaire { color: var(--color-texte); background: color-mix(in srgb, var(--color-texte-2) 16%, var(--color-surface)); }
+.p-complementaire::before { width: 10px; height: 4px; border-radius: 2px; background: var(--color-texte-2); }
+.p-propose { color: var(--primaire-fort); font-weight: 600; background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface)); border-color: var(--color-primary); }
+.p-propose::before { border-radius: 0; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+/* Avatars ronds à initiales, sans dégradé */
+.avatar { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface)); color: var(--primaire-fort); font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; }
+
+/* Feuille du bas : coins hauts 26, croix à droite, pas de poignée, actions en bas */
+.voile { position: fixed; inset: 0; z-index: 20; background: color-mix(in srgb, var(--color-texte) 45%, transparent); display: flex; align-items: flex-end; justify-content: center; animation: pc-voile 240ms ease both; }
+@keyframes pc-voile { from { opacity: 0; } to { opacity: 1; } }
+.feuille { position: relative; width: min(520px, 100%); background: var(--color-surface); border-radius: var(--rounded-feuille) var(--rounded-feuille) 0 0; padding: var(--spacing-lg) var(--spacing-lg) calc(var(--spacing-lg) + 8px); animation: pc-feuille 360ms var(--ease-sortie) both; }
+.feuille .croix { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--color-fond); color: var(--color-texte); cursor: pointer; }
+.feuille .croix svg { width: 18px; height: 18px; }
+.feuille h2 { color: var(--color-texte); font-size: 20px; font-weight: 700; margin: 0 44px var(--spacing-sm) 0; }
+.feuille .actions { margin-top: var(--spacing-md); justify-content: flex-end; }
+.feuille .actions .btn { flex: 1; }
+@keyframes pc-feuille { from { transform: translateY(100%); } to { transform: none; } }
+@media (min-width: 700px) { .voile { align-items: center; } .feuille { border-radius: var(--rounded-feuille); } }
+.message { position: fixed; left: 50%; bottom: 150px; transform: translateX(-50%); z-index: 9; max-width: calc(100% - 32px); padding: 10px 18px; border-radius: 999px; background: var(--color-texte); color: var(--color-surface); font-size: 14px; font-weight: 500; box-shadow: var(--ombre-haute); animation: pc-pop 320ms var(--ease-sortie) both; }
+.message:empty { display: none; }
+
+/* Barre de progression */
+.barre { height: 8px; border-radius: 8px; background: var(--color-lentille); overflow: hidden; }
+.barre > i { display: block; height: 100%; width: 0; border-radius: 8px; background: var(--color-accent); }
+
+.page > footer, .fictif { text-align: center; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0s !important; } }
+
+/* Numéro de participant (7 caractères, groupé 3 + 4) */
+.code, .meta .code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; letter-spacing: .02em; white-space: nowrap !important; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace !important; }

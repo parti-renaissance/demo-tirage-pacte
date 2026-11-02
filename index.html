@@ -5,207 +5,443 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Démonstration du tirage au sort, Convention du Pacte pour la jeunesse</title>
+<script>
+  // Thème : clair ou sombre selon la préférence du système.
+  (function () {
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const pose = () => { document.documentElement.dataset.theme = mq.matches ? 'sombre' : 'clair'; };
+    pose(); mq.addEventListener('change', pose);
+  })();
+</script>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="pacte-demo.css">
 <style>
-@font-face{font-family:Archivo;font-weight:400;src:url(archivo-latin-400-normal.woff2)}
-@font-face{font-family:Archivo;font-weight:700;src:url(archivo-latin-700-normal.woff2)}
-@font-face{font-family:Archivo;font-weight:900;src:url(archivo-latin-900-normal.woff2)}
-:root{--papier:#fafafa;--carte:#f0f0f0;--noir:#231f20;--gris:#5f5a59;--filet:#d6d2cf;--rouge:#e1000f;--jaune:#fef7c0;--vert:#d6f7dc;--cobalt:#d9edfe}
-*{box-sizing:border-box}
-body{margin:0;background:var(--papier);color:var(--noir);font:400 16px/1.5 Archivo,system-ui,sans-serif}
-.bandeau{background:var(--jaune);padding:10px 20px;font-weight:700;font-size:14px;text-align:center}
-main{max-width:980px;margin:0 auto;padding:32px 20px 80px}
-h1{font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.05;margin:0 0 10px;letter-spacing:-.01em}
-.chapo{color:var(--gris);margin:0 0 28px;max-width:60ch}
-.etape{background:#fff;border:1px solid var(--filet);border-left:6px solid var(--rouge);padding:22px 24px;margin:0 0 20px}
-.etape.inactive{opacity:.45;pointer-events:none}
-.etape h2{font-weight:900;font-size:21px;margin:0 0 6px;display:flex;gap:10px;align-items:baseline}
-.etape h2 span{color:var(--rouge)}
-.etape p{margin:6px 0;max-width:70ch}
-.chiffres{display:flex;gap:28px;flex-wrap:wrap;margin:14px 0}
-.chiffres b{display:block;font-size:30px;font-weight:900;line-height:1}
-.chiffres small{color:var(--gris)}
-.empreinte{font:13px/1.4 ui-monospace,Menlo,monospace;background:var(--carte);padding:8px 10px;word-break:break-all;margin:4px 0 10px}
-.libelle{font-size:13px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;margin-top:12px}
-button,.bouton{font:700 15px Archivo,sans-serif;border:2px solid var(--noir);background:#fff;color:var(--noir);padding:10px 16px;cursor:pointer;text-decoration:none;display:inline-block;margin:6px 8px 6px 0}
-button.principal{background:var(--rouge);border-color:var(--rouge);color:#fff;font-size:17px;padding:13px 22px}
-button:disabled{opacity:.4;cursor:not-allowed}
-button:focus-visible,.bouton:focus-visible,input:focus-visible{outline:3px solid #1f6feb;outline-offset:2px}
-input[type=text],input[type=search]{font:16px ui-monospace,Menlo,monospace;padding:10px 12px;border:2px solid var(--noir);width:100%;max-width:520px;background:#fff}
-.des{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.de{width:46px;height:46px;border:2px solid var(--noir);border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:22px;background:#fff}
-.de.roule{animation:roule .5s ease-out}
-@keyframes roule{0%{transform:rotate(-200deg) scale(.6)}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){.de.roule{animation:none}}
-.pv{background:var(--vert);padding:14px 16px;margin:12px 0}
-.pv dt{font-weight:700;font-size:14px}
-.pv dd{margin:0 0 8px;font:13px/1.4 ui-monospace,Menlo,monospace;word-break:break-all}
-table{border-collapse:collapse;width:100%;font-size:14px;margin-top:10px}
-th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--filet)}
-th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--gris)}
-tr.attente td{color:var(--gris)}
-.statut{font-weight:700}
-tr.tire .statut{color:#0b7a2a}
-.defile{max-height:420px;overflow:auto;border:1px solid var(--filet);margin-top:8px}
-.filtres{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.verdict{font-weight:900;padding:10px 14px;margin-top:10px}
-.verdict.ok{background:var(--vert)}.verdict.ko{background:#ffdfe2}
-code{font:14px ui-monospace,Menlo,monospace;background:var(--carte);padding:1px 5px}
-@media (max-width:600px){main{padding:20px 14px 60px}.etape{padding:16px 14px}}
-footer{color:var(--gris);font-size:13px;margin-top:30px}
+  .page { max-width: 760px; }
+  .bandeau-demo { margin: 0 0 var(--spacing-md); padding: 10px var(--spacing-md); border-radius: var(--rounded-petit); background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface)); color: var(--primaire-fort); font-weight: 600; font-size: 14px; text-align: center; }
+  .chapo { color: var(--color-texte-2); margin: 0 0 var(--spacing-md); }
+  .etape { display: flex; align-items: center; gap: 8px; margin: 0 0 var(--spacing-sm); color: var(--color-texte-2); font-size: var(--text-note); }
+  .etape .pastille { padding: 3px 11px 3px 9px; font-size: 13px; font-weight: 600; background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface)); color: var(--primaire-fort); }
+  .etape .pastille.fait { background: var(--color-accent); color: var(--color-sur-accent); }
+  .etape .pastille.fait::before { background: none; width: 9px; height: 5px; border-radius: 0; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-1px) rotate(-45deg); }
+  section.bloc-etape { margin-bottom: var(--spacing-md); }
+  section.bloc-etape.a-venir { opacity: .55; }
+  section.bloc-etape.a-venir .etape .pastille { background: transparent; border-color: var(--color-bord); color: var(--color-texte-2); }
+  .carte p, .retenu p { margin: 0 0 var(--spacing-sm); }
+  .carte .actions, .retenu .actions { margin-top: var(--spacing-sm); }
+  .retenu .chiffres { display: flex; gap: var(--spacing-lg); flex-wrap: wrap; margin: 6px 0 var(--spacing-sm); }
+  .retenu .chiffres strong { display: block; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .retenu .chiffres span { color: var(--color-texte-2); font-size: 14px; }
+  code.inline { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; background: var(--color-surface); border-radius: 6px; padding: 1px 6px; word-break: break-all; }
+  .saisie { display: grid; gap: var(--spacing-md); }
+  .faces { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+  .faces .f { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--color-surface); font-weight: 700; font-variant-numeric: tabular-nums; animation: pc-pop 320ms var(--ease-sortie) both; }
+  .scene { padding: var(--spacing-lg) var(--spacing-md); text-align: center; }
+  .scene h3 { color: var(--color-primary); font-size: 17px; font-weight: 600; }
+  .valeur { display: inline-block; max-width: 100%; margin: var(--spacing-sm) 0 0; padding: 10px 16px; background: var(--color-bulle); color: var(--color-bulle-texte); border-radius: 18px 18px 18px 4px; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+  .des[role="button"] { margin: var(--spacing-md) 0; }
+  .consigne { font-size: 17px; font-weight: 500; color: var(--primaire-fort); animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .6; } }
+  .melange { margin-top: var(--spacing-md); display: grid; gap: 8px; }
+  .melange .compte { font-variant-numeric: tabular-nums; font-weight: 500; }
+  .entete-resultat { display: flex; align-items: center; gap: var(--spacing-md); margin: var(--spacing-sm) 0 var(--spacing-sm); }
+  .entete-resultat > div:last-child { min-width: 0; }
+  .entete-resultat h3 { color: var(--color-texte); font-size: 22px; font-weight: 700; }
+  .entete-resultat .note { margin: 4px 0 0; text-align: left; }
+  .entete-resultat .des { flex: none; padding: 0 8px; gap: 20px; perspective: 500px; }
+  .clos { margin: 0 0 var(--spacing-md); display: grid; gap: 8px; }
+  .clos .gros { font-size: 17px; font-weight: 600; color: var(--color-texte); }
+  .carte + .carte { margin-top: var(--spacing-md); }
+  dl.pv { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: var(--spacing-sm) 0 0; }
+  dl.pv dt { color: var(--color-texte-2); }
+  dl.pv dd { margin: 0; min-width: 0; }
+  .recherche { margin: var(--spacing-md) 0 4px; }
+  .filtres { margin-bottom: var(--spacing-sm); }
+  .grille150, .liste-attente { list-style: none; margin: 0 calc(var(--marge) * -1); padding: 0; }
+  .grille150 li, .liste-attente li { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 0 12px; padding: 9px var(--spacing-md); }
+  .grille150 li { animation: pc-entree 320ms var(--ease-sortie) both; }
+  .grille150 li::after, .liste-attente li::after { content: ''; position: absolute; left: 68px; right: 0; bottom: 0; height: 1px; background: var(--color-bord); }
+  .rang { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface)); color: var(--primaire-fort); font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .liste-attente .rang { background: transparent; color: var(--color-texte-2); }
+  .nom { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meta { display: grid; justify-items: end; color: var(--color-texte-2); font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+  .meta .num { color: var(--color-texte); font-weight: 500; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .grille150 li:hover, .liste-attente li:hover { background: var(--color-lentille); }
+  li.vide-liste { display: block; text-align: center; color: var(--color-texte-2); }
+  details.attente { margin-top: var(--spacing-md); background: var(--color-fond); border-radius: var(--rounded-carte); }
+  details.attente summary { cursor: pointer; padding: 14px var(--spacing-md); font-weight: 600; color: var(--color-primary); list-style: none; display: flex; justify-content: space-between; align-items: center; min-height: 48px; border-radius: var(--rounded-carte); }
+  details.attente summary::-webkit-details-marker { display: none; }
+  details.attente summary::after { content: '▾'; transition: transform 240ms var(--ease-sortie); }
+  details.attente[open] summary::after { transform: rotate(180deg); }
+  details.attente .corps { padding: 0 var(--spacing-md) var(--spacing-md); }
+  .verdict { margin-top: var(--spacing-sm); padding: 12px 14px; border-radius: var(--rounded-petit); font-weight: 600; }
+  .verdict.ok { background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)); color: var(--primaire-fort); }
+  .verdict.ko { background: color-mix(in srgb, var(--color-alerte) 12%, var(--color-surface)); color: var(--color-alerte); }
+  .verdict .mono { font-weight: 400; }
+  .demo-seule { border: 1.5px dashed var(--color-bord); background: transparent; }
+  .confirmer { display: flex; gap: 12px; align-items: flex-start; margin: var(--spacing-md) 0 0; padding: 12px 14px; border: 1.5px solid var(--color-bord); border-radius: var(--rounded-petit); cursor: pointer; }
+  .confirmer:has(input:checked) { border-color: var(--color-primary); background: var(--color-lentille); }
+  .confirmer input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--color-primary); flex: none; }
+  .feuille ul.suites { margin: 0 0 var(--spacing-sm); padding-left: 20px; display: grid; gap: 4px; }
+  .feuille .alerte-txt { color: var(--color-alerte); font-weight: 600; margin: 0 0 var(--spacing-sm); }
+  @media (max-width: 699px) {
+    dl.pv { grid-template-columns: 1fr; gap: 2px; } dl.pv dd { margin-bottom: 8px; }
+    .tete .sceau .lib { display: none; }
+  }
+  @media (min-width: 700px) {
+    .scene .des { --d: 130px; }
+    .grille150, .liste-attente { margin: 0; }
+    .grille150 { border: 1px solid var(--color-bord); border-radius: var(--rounded-carte); overflow: hidden; }
+    .grille150 li, .liste-attente li { grid-template-columns: 48px minmax(0, 1fr) 100px 70px; }
+    .grille150 li::after, .liste-attente li::after { left: 0; }
+    .grille150 li:last-child::after, .liste-attente li:last-child::after { display: none; }
+    .meta { display: contents; }
+    .meta .num { justify-self: start; } .meta .age { justify-self: end; }
+  }
 </style>
 </head>
 <body>
-<div class="bandeau">Démonstration. Les 600 inscrits sont entièrement fictifs. Aucune donnée réelle n'est utilisée.</div>
-<main>
-<h1>Le tirage au sort de la Convention du Pacte pour la jeunesse</h1>
-<p class="chapo">Cette page reproduit le déroulé prévu le lundi 9 novembre devant le commissaire de justice. Le calcul se fait entièrement dans votre navigateur, avec le même programme que celui qui sera utilisé le jour du tirage.</p>
+<main class="page">
+  <header class="tete"><h1>Tirage au sort</h1><span class="sceau note"><span id="sceau"></span><span class="lib">Convention du Pacte pour la jeunesse</span></span></header>
 
-<section class="etape" id="e1">
-  <h2><span>1</span> La liste figée</h2>
-  <p>Après le dernier contrôle, la liste des éligibles est figée dans un fichier qui ne contient qu'un numéro de participant par ligne. La correspondance avec les prénoms et les noms est tenue à part.</p>
-  <div class="chiffres"><div><b id="nb">…</b><small>inscrits éligibles</small></div><div><b>150</b><small>places</small></div></div>
-  <div class="libelle">Empreinte de la liste (SHA-256)</div>
-  <div class="empreinte" id="empListe">…</div>
-  <p>Le commissaire peut recalculer cette empreinte lui-même, sans notre programme : <code>shasum -a 256 liste.txt</code> sur Mac, <code>certutil -hashfile liste.txt SHA256</code> sur Windows.</p>
-  <a class="bouton" id="dlListe" download="liste.txt">Télécharger liste.txt</a>
-  <a class="bouton" id="dlCorr" download="correspondance.csv">Télécharger la correspondance</a>
-</section>
+  <p class="bandeau-demo">Démonstration. Les 600 inscrits sont entièrement fictifs. Aucune donnée réelle n'est utilisée.</p>
+  <p class="chapo">Cette page reproduit le déroulé prévu le lundi 9 novembre devant le commissaire de justice. Le calcul se fait entièrement dans votre navigateur, avec le même programme que celui qui sera utilisé le jour du tirage. Le tirage n'a lieu qu'une seule fois.</p>
 
-<section class="etape" id="e2">
-  <h2><span>2</span> Le hasard du commissaire</h2>
-  <p>Le commissaire lance des dés devant témoins et saisit lui-même la suite des faces obtenues. Ici, les dés sont simulés. La valeur peut aussi être tapée à la main.</p>
-  <div class="des" id="des" aria-live="polite"></div>
-  <button id="lancer">Lancer dix dés</button>
-  <div class="libelle"><label for="valeur">Valeur saisie</label></div>
-  <input type="text" id="valeur" autocomplete="off" spellcheck="false" placeholder="par exemple 4 2 6 1 3 5 5 2 1 6">
-  <p><small>La valeur est utilisée exactement comme elle est tapée, espaces compris. Le procès-verbal la reproduit caractère pour caractère.</small></p>
-</section>
+  <section class="bloc-etape" id="e1" aria-labelledby="t1">
+    <p class="etape entree"><span class="pastille fait" id="p1">Étape 1 sur 5</span><span>Mise en place, une seule fois</span></p>
+    <div class="retenu entree">
+      <h2 id="t1">Liste gelée</h2>
+      <p>Après le dernier contrôle, la liste des éligibles est figée dans un fichier qui ne contient qu'un numéro de participant par ligne. La correspondance avec les prénoms et les noms est tenue à part.</p>
+      <div class="chiffres"><div><strong id="nb">…</strong><span>inscrits éligibles</span></div><div><strong id="places">150</strong><span>places</span></div></div>
+      <div class="empreinte">
+        <span class="note">Empreinte SHA-256 de la liste</span>
+        <code class="mono" id="emp-liste">…</code>
+        <button class="btn petit" type="button" id="deplier" aria-expanded="false" aria-controls="emp-liste">Afficher en entier</button>
+      </div>
+      <p style="margin-top:var(--spacing-sm)">Le commissaire peut recalculer cette empreinte lui-même, sans notre programme : <code class="inline">shasum -a 256 liste.txt</code> sur Mac, <code class="inline">certutil -hashfile liste.txt SHA256</code> sur Windows.</p>
+      <div class="actions">
+        <a class="btn petit" id="dlListe" download="liste.txt">Télécharger liste.txt</a>
+        <a class="btn petit" id="dlCorr" download="correspondance.csv">Télécharger la correspondance</a>
+      </div>
+    </div>
+  </section>
 
-<section class="etape" id="e3">
-  <h2><span>3</span> Le tirage</h2>
-  <p>Le programme mélange la liste à partir de la valeur. Les 150 premiers sont tirés au sort, les suivants forment la liste d'attente dans l'ordre. Le tirage n'a lieu qu'une fois.</p>
-  <button class="principal" id="tirer" disabled>Lancer le tirage</button>
-  <span id="enCours" hidden>Calcul en cours…</span>
-</section>
+  <section class="bloc-etape" id="e2" aria-labelledby="t2">
+    <p class="etape"><span class="pastille" id="p2">Étape 2 sur 5</span><span>Le hasard du commissaire</span></p>
+    <form class="carte saisie" id="form" novalidate>
+      <h2 id="t2">Valeur du commissaire</h2>
+      <p style="margin:0">Le commissaire lance des dés devant témoins et saisit lui-même la suite des faces obtenues. Dans la démonstration, la valeur peut être tapée à la main ou produite par dix dés simulés.</p>
+      <div>
+        <button class="btn" type="button" id="lancer-des">Simuler dix dés</button>
+        <p class="faces" id="faces" aria-live="polite" style="margin-top:var(--spacing-sm)"></p>
+      </div>
+      <div class="champ" id="champ">
+        <label for="valeur">Valeur saisie</label>
+        <input id="valeur" name="valeur" type="text" autocomplete="off" spellcheck="false" aria-describedby="aide err" placeholder="par exemple 4 2 6 1 3 5 5 2 1 6">
+        <p class="aide" id="aide">La valeur est utilisée exactement comme elle est tapée, espaces compris. Le procès-verbal la reproduit caractère pour caractère.</p>
+        <p class="erreur-msg" id="err" role="status"></p>
+      </div>
+      <button class="btn primaire grand" type="submit" id="valider-valeur">Valider la valeur</button>
+    </form>
+    <div class="carte" id="valeur-fixee" hidden>
+      <h2>Valeur validée</h2>
+      <p class="valeur" id="val-fixee" style="margin:0"></p>
+    </div>
+  </section>
 
-<section class="etape inactive" id="e4">
-  <h2><span>4</span> Le résultat et le procès-verbal</h2>
-  <p>Mentions à reporter au procès-verbal :</p>
-  <dl class="pv" id="pv"></dl>
-  <a class="bouton" id="dlRes" download="resultat.csv">Télécharger resultat.csv</a>
-  <a class="bouton" id="dlPv" download="proces-verbal-mentions.txt">Télécharger les mentions</a>
-  <div class="filtres">
-    <input type="search" id="cherche" placeholder="Chercher un nom ou un numéro" aria-label="Chercher un nom ou un numéro">
-    <label><input type="radio" name="f" value="tous" checked> Tous</label>
-    <label><input type="radio" name="f" value="tire"> Tirés au sort</label>
-    <label><input type="radio" name="f" value="attente"> Liste d'attente</label>
-  </div>
-  <div class="defile"><table><thead><tr><th>Rang</th><th>Numéro</th><th>Prénom</th><th>Nom</th><th>Statut</th></tr></thead><tbody id="tab"></tbody></table></div>
-</section>
+  <section class="bloc-etape a-venir" id="e3" aria-labelledby="t3">
+    <p class="etape"><span class="pastille" id="p3">Étape 3 sur 5</span><span>Le tirage</span></p>
+    <div class="carte" id="apercu3">
+      <h2 id="t3">Le tirage</h2>
+      <p style="margin:0">Le programme mélange la liste à partir de la valeur. Les 150 premiers sont tirés au sort, les suivants forment la liste d'attente dans l'ordre. Les dés se lancent une fois la valeur validée, après une confirmation. Le tirage n'a lieu qu'une fois.</p>
+    </div>
+    <div class="carte scene" id="scene" hidden>
+      <h3 id="t-scene">Tout est prêt</h3>
+      <p class="valeur" id="val-des"></p>
+      <div id="des" role="button" tabindex="0" aria-label="Lancer le tirage : touchez les dés"></div>
+      <p class="consigne" id="consigne">Touchez les dés pour lancer le tirage</p>
+      <p class="note" id="note-des">Les dés sont une mise en scène : le hasard vient de la valeur saisie. La même valeur redonne toujours la même liste. Le tirage n'a lieu qu'une fois.</p>
+      <div class="melange" id="melange" hidden>
+        <div class="compte" id="compte" role="status"></div>
+        <div class="barre" aria-hidden="true"><i id="progres"></i></div>
+      </div>
+      <button class="btn" type="button" id="retour" style="margin-top:16px">Changer la valeur</button>
+    </div>
+  </section>
 
-<section class="etape inactive" id="e5">
-  <h2><span>5</span> Vérifier le tirage</h2>
-  <p>Toute personne qui dispose de la liste et de la valeur peut rejouer le calcul. Si l'empreinte du résultat est la même que celle du procès-verbal, le tirage n'a pas été modifié. Rejouer vérifie le tirage sans en produire un nouveau.</p>
-  <div class="libelle"><label for="valeurVerif">Valeur du procès-verbal</label></div>
-  <input type="text" id="valeurVerif" autocomplete="off" spellcheck="false">
-  <div class="libelle"><label for="empVerif">Empreinte du résultat au procès-verbal</label></div>
-  <input type="text" id="empVerif" autocomplete="off" spellcheck="false">
-  <div><button id="verifier">Rejouer le calcul</button></div>
-  <div id="verdict" aria-live="polite"></div>
-  <p>Hors de cette page, avec Node.js : <code>node tirage.mjs liste.txt "valeur"</code>.</p>
-  <a class="bouton" href="tirage.mjs" download>Télécharger le programme tirage.mjs</a>
-</section>
+  <section class="bloc-etape a-venir" id="e4" aria-labelledby="t4">
+    <p class="etape"><span class="pastille" id="p4">Étape 4 sur 5</span><span>Le résultat et le procès-verbal</span></p>
+    <div id="apercu4" class="carte">
+      <h2 id="t4">Le résultat et le procès-verbal</h2>
+      <p style="margin:0">Le résultat apparaît ici : les 150 tirés au sort, la liste d'attente, et les mentions à reporter au procès-verbal.</p>
+    </div>
+    <div id="resultat" hidden>
+      <div class="entete-resultat entree">
+        <div id="des-res"></div>
+        <div><h3 id="t-res">150 tirés au sort</h3><p class="note" id="faces-res"></p></div>
+      </div>
+      <section class="carte clos entree" aria-labelledby="t-clos">
+        <h2 id="t-clos">Tirage effectué</h2>
+        <p class="gros">Le tirage est clos. Il ne peut plus être refait.</p>
+        <p class="note" style="text-align:left;margin:0" id="clos-quand"></p>
+      </section>
+      <section class="carte entree" aria-labelledby="t-pv">
+        <h2 id="t-pv">À reporter au procès-verbal</h2>
+        <dl class="pv" id="pv"></dl>
+        <div class="actions">
+          <a class="btn petit" id="dlRes" download="resultat.csv">Télécharger resultat.csv</a>
+          <a class="btn petit" id="dlPv" download="proces-verbal-mentions.txt">Télécharger les mentions</a>
+        </div>
+      </section>
+      <label class="recherche" for="cherche"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input type="search" id="cherche" placeholder="Chercher un nom ou un numéro" aria-label="Chercher un nom ou un numéro"></label>
+      <div class="filtres" role="group" aria-label="Filtrer la liste">
+        <button class="puce" type="button" data-f="tous" aria-pressed="true">Tous <span class="n" id="n-tous"></span></button>
+        <button class="puce" type="button" data-f="tire" aria-pressed="false">Tirés au sort <span class="n" id="n-tire"></span></button>
+        <button class="puce" type="button" data-f="attente" aria-pressed="false">Liste d'attente <span class="n" id="n-attente"></span></button>
+      </div>
+      <div id="bloc-tires">
+        <ol class="grille150" id="grille" aria-label="Les 150 personnes tirées au sort"></ol>
+      </div>
+      <details class="attente" id="bloc-attente">
+        <summary id="sum-attente">Liste d'attente</summary>
+        <div class="corps">
+          <p class="note" style="text-align:left;margin:0 0 var(--spacing-sm)">Dans l'ordre du tirage : la première place libérée va à la personne du rang 151.</p>
+          <ol class="liste-attente" id="attente" aria-label="La liste d'attente"></ol>
+        </div>
+      </details>
+    </div>
+  </section>
 
-<button id="raz">Recommencer la démonstration</button>
-<footer>Programme : HMAC-SHA256 et mélange de Fisher et Yates. Le code de cette page et celui de tirage.mjs produisent le même résultat pour la même liste et la même valeur.</footer>
+  <section class="bloc-etape a-venir" id="e5" aria-labelledby="t5">
+    <p class="etape"><span class="pastille" id="p5">Étape 5 sur 5</span><span>Vérifier le tirage</span></p>
+    <div class="carte saisie" id="verif">
+      <h2 id="t5">Vérifier le tirage</h2>
+      <p style="margin:0">Toute personne qui dispose de la liste et de la valeur peut rejouer le calcul. Si l'empreinte du résultat est la même que celle du procès-verbal, le tirage n'a pas été modifié. Rejouer vérifie le tirage sans en produire un nouveau.</p>
+      <div class="champ"><label for="valeurVerif">Valeur du procès-verbal</label><input id="valeurVerif" type="text" autocomplete="off" spellcheck="false" disabled></div>
+      <div class="champ"><label for="empVerif">Empreinte du résultat au procès-verbal</label><input id="empVerif" type="text" autocomplete="off" spellcheck="false" disabled></div>
+      <div><button class="btn primaire" type="button" id="verifier" disabled>Rejouer le calcul</button></div>
+      <div id="verdict" aria-live="polite"></div>
+      <p style="margin:0">Hors de cette page, avec Node.js : <code class="inline">node tirage.mjs liste.txt "valeur"</code></p>
+      <div class="actions"><a class="btn petit" href="tirage.mjs" download>Télécharger le programme tirage.mjs</a></div>
+    </div>
+  </section>
+
+  <section class="carte demo-seule" aria-labelledby="t-demo">
+    <h2 id="t-demo">Réservé à la démonstration</h2>
+    <p>Le jour du tirage, il n'y aura pas de second tirage. Ce bouton n'existe que dans cette démonstration : il efface le tirage enregistré dans ce navigateur pour permettre de la rejouer.</p>
+    <div class="actions"><button class="btn" type="button" id="raz">Recommencer la démonstration</button></div>
+  </section>
+
+  <p class="note">Programme : HMAC-SHA256 et mélange de Fisher et Yates. Le code de cette page et celui de tirage.mjs produisent le même résultat pour la même liste et la même valeur.</p>
 </main>
+
+<div class="voile" id="voile" hidden>
+  <div class="feuille" role="dialog" aria-modal="true" aria-labelledby="f-t">
+    <button class="croix" type="button" data-non aria-label="Fermer"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <h2 id="f-t"></h2>
+    <p class="alerte-txt" id="f-alerte"></p>
+    <ul class="suites" id="f-suites"></ul>
+    <label class="confirmer" id="f-conf-l"><input type="checkbox" id="conf"><span id="f-conf-t"></span></label>
+    <div class="actions"><button class="btn" type="button" data-non>Annuler</button><button class="btn primaire" type="button" id="oui"></button></div>
+  </div>
+</div>
 
 <script src="inscrits.js"></script>
 <script src="tirage.js"></script>
+<script src="des.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
 const CLE = "demo-tirage-pacte";
-const NOMS = new Map(INSCRITS.map(([n, p, nom]) => [n, [p, nom]]));
+const NOMS = new Map(INSCRITS.map(([n, p, nom, age]) => [n, [p, nom, age]]));
 const LISTE = INSCRITS.map((i) => i[0]).join("\n") + "\n";
 const BRUT = new TextEncoder().encode(LISTE);
+const nb = (n) => Number(n).toLocaleString("fr-FR");
 const blobUrl = (txt, type) => URL.createObjectURL(new Blob([txt], { type }));
-let tirage = null;
+const echappe = (x) => String(x).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let tirage = null, valeur = "", des = null, lance = false, empListe = "";
 
-async function init() {
-  $("nb").textContent = INSCRITS.length;
-  $("empListe").textContent = await sha256Hex(BRUT);
-  $("dlListe").href = blobUrl(LISTE, "text/plain");
-  $("dlCorr").href = blobUrl("numero;prenom;nom;age\n" + INSCRITS.map((i) => i.join(";")).join("\n") + "\n", "text/csv");
-  const garde = localStorage.getItem(CLE);
-  if (garde) afficher(JSON.parse(garde).valeur, false);
+const court = (h) => h.slice(0, 12) + "…" + h.slice(-8);
+$("sceau").innerHTML = Des.sceau("pacte", 30);
+
+function etat(e) { // e : "saisie" | "des" | "resultat"
+  const f = (id, fait, avenir) => { $(id).classList.toggle("fait", fait); $(id).closest(".bloc-etape").classList.toggle("a-venir", avenir); };
+  f("p2", e !== "saisie", false);
+  f("p3", e === "resultat", e === "saisie");
+  f("p4", e === "resultat", e !== "resultat");
+  f("p5", false, e !== "resultat");
+  $("form").hidden = e !== "saisie";
+  $("valeur-fixee").hidden = e === "saisie";
+  $("apercu3").hidden = e !== "saisie";
+  $("scene").hidden = e !== "des";
+  $("apercu4").hidden = e === "resultat";
+  $("resultat").hidden = e !== "resultat";
+  for (const id of ["valeurVerif", "empVerif", "verifier"]) $(id).disabled = e !== "resultat";
+  if (e !== "saisie") $("val-fixee").textContent = "« " + valeur + " »";
 }
 
-$("lancer").onclick = () => {
-  const faces = [...crypto.getRandomValues(new Uint32Array(10))].map((x) => (x % 6) + 1);
-  $("des").innerHTML = faces.map((f) => `<div class="de roule">${f}</div>`).join("");
-  $("valeur").value = faces.join(" ");
-  majBouton();
-};
-$("valeur").oninput = majBouton;
-function majBouton() { $("tirer").disabled = !$("valeur").value || !!tirage; }
+async function init() {
+  $("nb").textContent = nb(INSCRITS.length);
+  $("places").textContent = nb(PLACES);
+  empListe = await sha256Hex(BRUT);
+  $("emp-liste").textContent = court(empListe);
+  $("dlListe").href = blobUrl(LISTE, "text/plain");
+  $("dlCorr").href = blobUrl("numero;prenom;nom;age\n" + INSCRITS.map((i) => i.join(";")).join("\n") + "\n", "text/csv");
+  etat("saisie");
+  const garde = localStorage.getItem(CLE);
+  if (garde) { valeur = JSON.parse(garde).valeur; await afficher(false); }
+}
 
-$("tirer").onclick = async () => {
+$("deplier").addEventListener("click", (e) => {
+  const ouvert = e.currentTarget.getAttribute("aria-expanded") === "true";
+  e.currentTarget.setAttribute("aria-expanded", String(!ouvert));
+  e.currentTarget.textContent = ouvert ? "Afficher en entier" : "Réduire";
+  $("emp-liste").textContent = ouvert ? court(empListe) : empListe;
+});
+
+// Étape 2 : dés simulés pour produire la valeur
+$("lancer-des").onclick = () => {
+  const fs = [...crypto.getRandomValues(new Uint32Array(10))].map((x) => (x % 6) + 1);
+  $("faces").innerHTML = fs.map((f) => `<span class="f">${f}</span>`).join("");
+  $("valeur").value = fs.join(" ");
+  $("champ").classList.remove("erreur"); $("err").textContent = "";
+};
+$("form").addEventListener("submit", (e) => {
+  e.preventDefault();
   const v = $("valeur").value;
-  if (!v || tirage) return;
-  if (!confirm(`Lancer le tirage avec la valeur « ${v} » ? Il n'aura lieu qu'une fois.`)) return;
-  await afficher(v, true);
-};
+  if (!v.trim()) { $("champ").classList.add("erreur"); $("err").textContent = "Saisissez une valeur avant de valider."; $("valeur").focus(); return; }
+  valeur = v; montrerDes();
+});
+$("retour").addEventListener("click", () => { if (lance) return; etat("saisie"); $("valeur").focus(); });
 
-async function afficher(valeur, nouveau) {
-  $("enCours").hidden = false;
-  tirage = await tirer(BRUT, valeur);
-  tirage.valeur = valeur;
-  $("enCours").hidden = true;
-  if (nouveau) localStorage.setItem(CLE, JSON.stringify({ valeur }));
-  $("valeur").value = valeur; $("valeur").readOnly = true;
-  $("lancer").disabled = true; $("tirer").disabled = true;
-  $("tirer").textContent = "Tirage effectué";
-  ["e4", "e5"].forEach((id) => $(id).classList.remove("inactive"));
+// Étape 3 : scène des dés, confirmation, lancer
+function montrerDes() {
+  etat("des");
+  $("val-des").textContent = "« " + valeur + " »";
+  des = Des.rendre($("des"), { valeur, n: 2, taille: 120 });
+  lance = false; $("consigne").hidden = false; $("melange").hidden = true; $("progres").style.width = "0";
+  $("des").removeAttribute("aria-disabled");
+  $("e3").scrollIntoView({ behavior: reduit ? "auto" : "smooth" });
+}
+async function lancer() {
+  lance = true;
+  localStorage.setItem(CLE, JSON.stringify({ valeur })); // enregistré dès le lancer : plus de second tirage possible
+  $("consigne").hidden = true; $("retour").disabled = true;
+  $("des").setAttribute("aria-disabled", "true");
+  $("melange").hidden = false;
+  const roulis = des.rouler();
+  const total = INSCRITS.length, duree = reduit ? 0 : 2400, debut = performance.now();
+  const calcul = tirer(BRUT, valeur);
+  await new Promise((ok) => {
+    const pas = (now) => {
+      const p = duree ? Math.min(1, (now - debut) / duree) : 1, e = 1 - Math.pow(1 - p, 2);
+      const n = Math.round(total * e);
+      $("compte").textContent = "Mélange de " + nb(total) + " numéros… " + nb(n) + " / " + nb(total);
+      $("progres").style.width = (e * 100) + "%";
+      p < 1 ? requestAnimationFrame(pas) : ok();
+    };
+    requestAnimationFrame(pas);
+  });
+  await roulis;
+  tirage = await calcul; tirage.valeur = valeur;
+  $("compte").textContent = "Mélange terminé : " + nb(PLACES) + " numéros tirés.";
+  await new Promise((ok) => setTimeout(ok, reduit ? 0 : 600));
+  await afficher(true);
+}
+function demander(o) {
+  return new Promise((ok) => {
+    const voile = $("voile"), conf = $("conf"), oui = $("oui");
+    $("f-t").textContent = o.titre; $("f-alerte").textContent = o.alerte;
+    $("f-suites").innerHTML = o.suites.map((s) => `<li>${s}</li>`).join("");
+    $("f-conf-l").hidden = !o.confirmation; $("f-conf-t").textContent = o.confirmation || "";
+    oui.textContent = o.oui; conf.checked = false; oui.disabled = !!o.confirmation;
+    const fin = (r) => { voile.hidden = true; conf.onchange = oui.onclick = voile.onclick = null; document.removeEventListener("keydown", cl); ok(r); };
+    const cl = (e) => { if (e.key === "Escape") fin(false); };
+    conf.onchange = () => { oui.disabled = !conf.checked; };
+    oui.onclick = () => fin(true);
+    voile.onclick = (e) => { if (e.target === voile) fin(false); };
+    voile.querySelectorAll("[data-non]").forEach((b) => (b.onclick = () => fin(false)));
+    document.addEventListener("keydown", cl);
+    voile.hidden = false; (o.confirmation ? conf : oui).focus();
+  });
+}
+async function toucher() {
+  if (lance || tirage || localStorage.getItem(CLE)) return;
+  const ok = await demander({
+    titre: "Lancer le tirage ?", alerte: "Cette action est irréversible.",
+    suites: [`Le tirage se fait avec la valeur « ${echappe(valeur)} ».`, "Il n'aura lieu qu'une fois : il ne pourra plus être refait.", `Les ${PLACES} premiers numéros sont tirés au sort, les suivants forment la liste d'attente.`],
+    confirmation: "Je confirme la valeur et le lancement du tirage", oui: "Lancer le tirage",
+  });
+  if (ok) lancer(); else $("des").focus();
+}
+$("des").addEventListener("click", toucher);
+$("des").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toucher(); } });
+
+// Étape 4 : résultat
+async function afficher(nouveau) {
+  if (!tirage) { tirage = await tirer(BRUT, valeur); tirage.valeur = valeur; }
+  etat("resultat");
+  const d = Des.rendre($("des-res"), { valeur, n: 2, taille: window.innerWidth < 700 ? 44 : 52, tremble: false, pose: true });
+  $("faces-res").textContent = "Faces tirées de la valeur « " + valeur + " » : " + d.faces.join(" et ") + ". Même valeur, même liste.";
+  $("clos-quand").textContent = nouveau ? "Tirage effectué à l'instant. Les " + nb(PLACES) + " premiers sont les tirés au sort." : "Un tirage a déjà été effectué dans ce navigateur. Les " + nb(PLACES) + " premiers sont les tirés au sort.";
   const pv = [
     ["Nombre de numéros dans la liste", tirage.nombre],
     ["Empreinte de la liste", tirage.empreinteListe],
     ["Valeur saisie par le commissaire", JSON.stringify(valeur)],
     ["Empreinte du résultat", tirage.empreinteResultat],
   ];
-  $("pv").innerHTML = pv.map(([a, b]) => `<dt>${a}</dt><dd>${String(b).replace(/</g, "&lt;")}</dd>`).join("");
+  $("pv").innerHTML = pv.map(([a, b], i) => `<dt>${a}</dt><dd>${i === 1 || i === 3 ? '<code class="mono">' + b + "</code>" : echappe(b)}</dd>`).join("");
   $("dlRes").href = blobUrl(tirage.resultat, "text/csv");
   $("dlPv").href = blobUrl(pv.map(([a, b]) => `${a} : ${b}`).join("\n") + "\n", "text/plain");
   $("valeurVerif").value = valeur;
   $("empVerif").value = tirage.empreinteResultat;
-  rendreTable();
-  if (nouveau) $("e4").scrollIntoView({ behavior: "smooth" });
+  $("n-tous").textContent = nb(tirage.ordre.length);
+  $("n-tire").textContent = nb(PLACES);
+  $("n-attente").textContent = nb(tirage.ordre.length - PLACES);
+  rendreListes();
+  if (nouveau) $("e4").scrollIntoView({ behavior: reduit ? "auto" : "smooth" });
 }
-
-function rendreTable() {
+let filtre = "tous";
+function rendreListes() {
   const q = $("cherche").value.trim().toLowerCase();
-  const f = document.querySelector("input[name=f]:checked").value;
-  $("tab").innerHTML = tirage.ordre.map((n, k) => {
-    const [p, nom] = NOMS.get(n); const tire = k < PLACES;
-    if (f === "tire" && !tire) return ""; if (f === "attente" && tire) return "";
+  const ligne = (n, k, tire) => {
+    const [p, nom, age] = NOMS.get(n);
     if (q && !`${n} ${p} ${nom}`.toLowerCase().includes(q)) return "";
-    return `<tr class="${tire ? "tire" : "attente"}"><td>${k + 1}</td><td>${n}</td><td>${p}</td><td>${nom}</td><td class="statut">${tire ? "tiré au sort" : "liste d'attente"}</td></tr>`;
-  }).join("");
+    return `<li${tire ? ` style="animation-delay:${Math.min(k, 40) * 18}ms"` : ""}><span class="rang">${k + 1}</span><span class="nom">${echappe(p)} ${echappe(nom)}</span><span class="meta"><span class="num">${n}</span><span class="age">${age} ans</span></span></li>`;
+  };
+  const tires = tirage.ordre.slice(0, PLACES).map((n, k) => ligne(n, k, true)).join("");
+  const att = tirage.ordre.slice(PLACES).map((n, k) => ligne(n, k + PLACES, false)).join("");
+  const vide = '<li class="vide-liste">Aucun résultat.</li>';
+  $("grille").innerHTML = tires || vide;
+  $("attente").innerHTML = att || vide;
+  $("bloc-tires").hidden = filtre === "attente";
+  $("bloc-attente").hidden = filtre === "tire";
+  $("sum-attente").textContent = "Liste d'attente (" + nb(tirage.ordre.length - PLACES) + ")";
+  if (q || filtre === "attente") $("bloc-attente").open = true;
 }
-$("cherche").oninput = rendreTable;
-document.querySelectorAll("input[name=f]").forEach((r) => (r.onchange = rendreTable));
+$("cherche").oninput = rendreListes;
+document.querySelectorAll(".puce").forEach((b) => (b.onclick = () => {
+  filtre = b.dataset.f;
+  document.querySelectorAll(".puce").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  rendreListes();
+}));
 
+// Étape 5 : vérification
 $("verifier").onclick = async () => {
   const r = await tirer(BRUT, $("valeurVerif").value);
   const ok = r.empreinteResultat === $("empVerif").value.trim();
   $("verdict").className = "verdict " + (ok ? "ok" : "ko");
-  $("verdict").textContent = ok
+  $("verdict").innerHTML = ok
     ? "Même empreinte : le résultat correspond au procès-verbal."
-    : `Empreinte différente (${r.empreinteResultat}) : la valeur ou le résultat ne correspondent pas au procès-verbal.`;
+    : `Empreinte différente : la valeur ou le résultat ne correspondent pas au procès-verbal.<br><span class="mono">Empreinte recalculée : ${r.empreinteResultat}</span>`;
 };
 
-$("raz").onclick = () => {
-  if (!confirm("Effacer ce tirage de démonstration et recommencer ?")) return;
-  localStorage.removeItem(CLE); location.reload();
+// Réservé à la démonstration
+$("raz").onclick = async () => {
+  const ok = await demander({
+    titre: "Recommencer la démonstration ?", alerte: "Propre à la démonstration.",
+    suites: ["Le tirage enregistré dans ce navigateur est effacé.", "Le jour du tirage, il n'y a pas de second tirage."], oui: "Tout effacer",
+  });
+  if (ok) { localStorage.removeItem(CLE); location.reload(); }
 };
 init();
 </script>
